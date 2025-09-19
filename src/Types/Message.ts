@@ -107,8 +107,6 @@ type Listable = {
 
     /** Text of the bnutton on the list (required) */
     buttonText?: string
-	   /** Text of the button on the list (required) */
-    buttonText?: string
 }
 
 type WithDimensions = {
