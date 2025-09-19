@@ -32,7 +32,7 @@ import {
 	getNextPreKeys,
 	getStatusFromReceiptType,
 	hkdf,
-	generateMessageIDV2
+	generateMessageIDV2,
 	MISSING_KEYS_ERROR_TEXT,
 	NACK_REASONS,
 	NO_MESSAGE_FOUND_ERROR_TEXT,
