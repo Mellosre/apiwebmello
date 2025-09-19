@@ -684,6 +684,25 @@ const lidCache = new NodeCache({
 				logger.debug({ jid }, 'adding device identity')
 			}
 
+			const buttonType = getButtonType(message)
+				const supportedBizTypes = ['template', 'button', 'list'] // add or adjust supported types as needed
+				const messageType = message.type // adjust if message type is accessed differently
+
+				if(buttonType && supportedBizTypes.includes(messageType)) {
+					(stanza.content as BinaryNode[]).push({
+						tag: 'biz',
+						attrs: { },
+						content: [
+							{
+								tag: buttonType,
+								attrs: getButtonArgs(message),
+							}
+						]
+					})
+
+					logger.debug({ jid }, 'adding business node')
+				}
+
 			if (additionalNodes && additionalNodes.length > 0) {
 				;(stanza.content as BinaryNode[]).push(...additionalNodes)
 			}
@@ -842,6 +861,7 @@ const lidCache = new NodeCache({
 		relayMessage,
 		sendReceipt,
 		sendReceipts,
+		getButtonArgs,
 		readMessages,
 		refreshMediaConn,
 		waUploadToServer,
