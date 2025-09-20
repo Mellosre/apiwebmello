@@ -685,10 +685,7 @@ const lidCache = new NodeCache({
 			}
 
 			const buttonType = getButtonType(message)
-				const supportedBizTypes = ['template', 'button', 'list'] // add or adjust supported types as needed
-				const messageType = message.type // adjust if message type is accessed differently
-
-				if(buttonType && supportedBizTypes.includes(messageType)) {
+				if(buttonType) {
 					(stanza.content as BinaryNode[]).push({
 						tag: 'biz',
 						attrs: { },
