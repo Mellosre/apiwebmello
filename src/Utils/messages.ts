@@ -589,27 +589,6 @@ export const generateWAMessageContent = async (
 		}
 	}
 
-	if ('sections' in message && !!message.sections) {
-    const listMessage: proto.Message.IListMessage = {
-        // Correção do erro TS2740:
-        // Desde que message.sections seja um array, esta linha está correta.
-        // O erro original acontecia se você tentasse criar isso com um objeto vazio {}.
-        sections: message.sections,
-
-        // Correção do erro TS2339:
-        // Por estar dentro de um 'if' que verifica a existência de 'sections',
-        // o TypeScript tem mais segurança para aceitar o acesso
-        // a estas propriedades relacionadas a mensagens de lista.
-        buttonText: message.buttonText,
-        title: message.title,
-        footerText: message.footer,
-        description: message.text,
-        listType: proto.Message.ListMessage.ListType.SINGLE_SELECT
-    };
-
-    // 'm' agora é definido como um objeto contendo a mensagem de lista
-    m = { listMessage };
-}
 
 	if ('viewOnce' in message && !!message.viewOnce) {
 		m = { viewOnceMessage: { message: m } }
