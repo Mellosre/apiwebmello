@@ -53,6 +53,7 @@ import {
 	isJidStatusBroadcast,
 	isJidUser,
 	isLidUser,
+	jidEncode,
 	jidDecode,
 	jidNormalizedUser,
 	S_WHATSAPP_NET
@@ -167,11 +168,7 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 
 		const encKey = randomBytes(32)
 
-		const devices = getBinaryNodeChildren(child, 'device')
-				if (areJidsSameUser(child.attrs.jid, authState.creds.me!.id)) {
-					const deviceJids = devices.map(d => d.attrs.jid)
-					logger.info({ deviceJids }, 'got my own devices')
-				}
+		const devices = (await getUSyncDevices([toJid], true, false)).map(({ user, device }) => jidEncode(user, 's.whatsapp.net', device))
 
 		//const devices = (await getUSyncDevices([toJid], true, false)).map(({ user, device }) => jidEncode(user, 's.whatsapp.net', device))
 
