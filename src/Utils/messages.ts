@@ -589,18 +589,18 @@ export const generateWAMessageContent = async (
 		}
 	}
 
-     if('sections' in message && !!message.sections) {
-		const listMessage: proto.Message.IListMessage = {
-			sections: message.sections,
-			buttonText: message.buttonText,
-			title: message.title,
-			footerText: message.footer,
-			description: message.text,
-			listType: proto.Message.ListMessage.ListType.SINGLE_SELECT
-		}
+     if ('sections' in message && Array.isArray(message.sections)) {
+        const listMessage: proto.Message.IListMessage = {
+            sections: message.sections,
+            buttonText: message.buttonText || '', // Adiciona valores padrão para segurança
+            title: message.title || '',
+            footerText: message.footer || '',
+            description: message.text || '',
+            listType: proto.Message.ListMessage.ListType.SINGLE_SELECT
+        };
 
-		m = { listMessage }
-	}
+        m = { listMessage };
+    }
 
 	if ('viewOnce' in message && !!message.viewOnce) {
 		m = { viewOnceMessage: { message: m } }
