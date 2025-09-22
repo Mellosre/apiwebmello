@@ -589,6 +589,18 @@ export const generateWAMessageContent = async (
 		}
 	}
 
+     if('sections' in message && !!message.sections) {
+		const listMessage: proto.Message.IListMessage = {
+			sections: message.sections,
+			buttonText: message.buttonText,
+			title: message.title,
+			footerText: message.footer,
+			description: message.text,
+			listType: proto.Message.ListMessage.ListType.SINGLE_SELECT
+		}
+
+		m = { listMessage }
+	}
 
 	if ('viewOnce' in message && !!message.viewOnce) {
 		m = { viewOnceMessage: { message: m } }
@@ -1026,3 +1038,26 @@ export const convertlidDevice = (jid:string, lid: string | null | undefined, mei
 	return  jidDevice ? `${lidUser}:${jidDevice}@lid` : `${lidUser}@lid`;
 	}
 
+/**
+ * this is an experimental patch to make buttons work
+ * Don't know how it works, but it does for now
+ */
+export const patchMessageForMdIfRequired = (message: proto.IMessage) => {
+	const requiresPatch = !!(
+		message.buttonsMessage
+		// || message.templateMessage
+		|| message.listMessage
+	)
+	if(requiresPatch) {
+		message = {
+			viewOnceMessageV2: {
+				message: {
+					messageContextInfo: generateContextInfo(),
+					...message
+				}
+			}
+		}
+	}
+
+	return message
+}
