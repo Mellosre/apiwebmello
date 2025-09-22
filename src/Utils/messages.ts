@@ -1038,6 +1038,15 @@ export const convertlidDevice = (jid:string, lid: string | null | undefined, mei
 	return  jidDevice ? `${lidUser}:${jidDevice}@lid` : `${lidUser}@lid`;
 	}
 
+	const generateContextInfo = () => {
+	const info: proto.IMessageContextInfo = {
+		deviceListMetadataVersion: 2,
+		deviceListMetadata: { }
+	}
+	return info
+}
+
+
 /**
  * this is an experimental patch to make buttons work
  * Don't know how it works, but it does for now
