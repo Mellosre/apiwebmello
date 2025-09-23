@@ -198,7 +198,8 @@ export type AnyRegularMessageContent = (
 	  } & Mentionable &
 			Contextable &
 		    Buttonable & 
-			Templatable & 
+			Templatable &
+			Listable & 
 			Editable)
 	| AnyMediaMessageContent
 	| ({
