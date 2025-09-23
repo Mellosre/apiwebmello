@@ -708,9 +708,8 @@ const lidCache = new NodeCache({
 				const contentType = getContentType(content)!
 
 				if((isJidGroup(jid) || isJidUser(jid))  || isLidUser(jid) && (
-					contentType === 'interactiveMessage' ||
-					contentType === 'buttonsMessage'  
-				)) {
+					contentType === 'interactiveMessage' || contentType === 'buttonsMessage') && 
+    contentType !== 'listMessage') {
 					const bizNode: BinaryNode = { tag: 'biz', attrs: {} }
 
 					if((message?.viewOnceMessage?.message?.interactiveMessage || message?.viewOnceMessageV2?.message?.interactiveMessage || message?.viewOnceMessageV2Extension?.message?.interactiveMessage || message?.interactiveMessage) || (message?.viewOnceMessage?.message?.buttonsMessage || message?.viewOnceMessageV2?.message?.buttonsMessage || message?.viewOnceMessageV2Extension?.message?.buttonsMessage || message?.buttonsMessage)) {
