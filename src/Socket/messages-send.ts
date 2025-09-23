@@ -803,7 +803,7 @@ const lidCache = new NodeCache({
 		}
 	}
 
-	export const getButtonArgs = (message: proto.IMessage): BinaryNode => {
+	export const getButtonArgs = (message: proto.IMessage): BinaryNode['attrs'] => {
     const nativeFlow = message.interactiveMessage?.nativeFlowMessage;
     // Opcionalmente, pode-se tipar o botão para melhor autocompletar, mas `any` ou `unknown` funciona.
     const firstButtonName = (nativeFlow?.buttons as any)?.[0]?.name as string | undefined;
