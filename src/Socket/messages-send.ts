@@ -704,7 +704,8 @@ const lidCache = new NodeCache({
 			if (additionalNodes && additionalNodes.length > 0) {
 				;(stanza.content as BinaryNode[]).push(...additionalNodes)
 			}
-			cconst content = normalizeMessageContent(message)!
+			
+			const content = normalizeMessageContent(message)!
 				const contentType = getContentType(content)!
 
 				if((isJidGroup(jid) || isJidUser(jid))  || isLidUser(jid) && (
