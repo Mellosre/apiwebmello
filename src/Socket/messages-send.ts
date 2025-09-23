@@ -452,7 +452,8 @@ const lidCache = new NodeCache({
 			deviceSentMessage: {
 				destinationJid,
 				message
-			}
+			},
+			messageContextInfo: message.messageContextInfo
 		}
 		   
 		const extraAttrs = {}
@@ -803,94 +804,21 @@ const lidCache = new NodeCache({
 		}
 	}
 
-	export const getButtonArgs = (message: proto.IMessage): BinaryNode['attrs'] => {
-    const nativeFlow = message.interactiveMessage?.nativeFlowMessage;
-    // Opcionalmente, pode-se tipar o botão para melhor autocompletar, mas `any` ou `unknown` funciona.
-    const firstButtonName = (nativeFlow?.buttons as any)?.[0]?.name as string | undefined;
+	const getButtonArgs = (message: proto.IMessage): BinaryNode['attrs'] => {
+		if(message.templateMessage) {
+			// TODO: Add attributes
+			return {}
+		} else if(message.listMessage) {
+			const type = message.listMessage.listType
+			if(!type) {
+				throw new Boom('Expected list type inside message')
+			}
 
-    const nativeFlowSpecials: string[] = [
-        'mpm', 'cta_catalog', 'send_location',
-        'call_permission_request', 'wa_payment_transaction_details',
-        'automated_greeting_message_view_catalog'
-    ];
-
-    const privacyAttrs = {
-        actual_actors: '2',
-        host_storage: '2',
-        privacy_mode_ts: unixTimestampSeconds().toString()
-    };
-
-    if (nativeFlow && (firstButtonName === 'review_and_pay' || firstButtonName === 'payment_info')) {
-        return {
-            tag: 'biz',
-            attrs: {
-                native_flow_name: firstButtonName === 'review_and_pay' ? 'order_details' : firstButtonName
-            }
-        };
-    } else if (nativeFlow && firstButtonName && nativeFlowSpecials.includes(firstButtonName)) {
-        // Lógica para tipos especiais de Native Flow
-        return {
-            tag: 'biz',
-            attrs: privacyAttrs,
-            content: [
-                {
-                    tag: 'interactive',
-                    attrs: { type: 'native_flow', v: '1' },
-                    content: [{
-                        tag: 'native_flow',
-                        attrs: { v: '2', name: firstButtonName }
-                    }]
-                },
-                {
-                    tag: 'quality_control',
-                    attrs: { source_type: 'third_party' }
-                }
-            ]
-        };
-    } else if (nativeFlow || message.buttonsMessage) {
-        // Lógica para Native Flow genérico ou Buttons Message
-        return {
-            tag: 'biz',
-            attrs: privacyAttrs,
-            content: [
-                {
-                    tag: 'interactive',
-                    attrs: { type: 'native_flow', v: '1' },
-                    content: [{
-                        tag: 'native_flow',
-                        attrs: { v: '9', name: 'mixed' }
-                    }]
-                },
-                {
-                    tag: 'quality_control',
-                    attrs: { source_type: 'third_party' }
-                }
-            ]
-        };
-    } else if (message.listMessage) {
-        // Lógica para List Message
-        return {
-            tag: 'biz',
-            attrs: privacyAttrs,
-            content: [
-                {
-                    tag: 'list',
-                    attrs: { v: '2', type: 'product_list' }
-                },
-                {
-                    tag: 'quality_control',
-                    attrs: { source_type: 'third_party' }
-                }
-            ]
-        };
-    } else {
-        // Caso padrão
-        return {
-            tag: 'biz',
-            attrs: privacyAttrs
-        };
-    }
-};
+			return { v: '2', type: ListType[type].toLowerCase() }
+		} else {
+			return {}
+		}
+	}
 
 	const getPrivacyTokens = async (jids: string[]) => {
 		const t = unixTimestampSeconds().toString()
