@@ -705,31 +705,30 @@ const lidCache = new NodeCache({
 				;(stanza.content as BinaryNode[]).push(...additionalNodes)
 			}
 			const content = normalizeMessageContent(message)!
-const contentType = getContentType(content)!
+				const contentType = getContentType(content)!
 
-// A CORREÇÃO está em agrupar TODAS as verificações de JID
-// e TODAS as verificações de tipo de conteúdo.
-if (
-    (isJidGroup(jid) || isJidUser(jid) || isLidUser(jid)) && // GRUPO 1: Verifica o tipo de JID
-    (contentType === 'interactiveMessage' || contentType === 'buttonsMessage') // GRUPO 2: Verifica o tipo de conteúdo
-) {
-    // ESTE É O SEGUNDO BLOCO
-    const bizNode: BinaryNode = { tag: 'biz', attrs: {} }
+				if((isJidGroup(jid) || isJidUser(jid))  || isLidUser(jid) && (
+					contentType === 'interactiveMessage' ||
+					contentType === 'buttonsMessage' 
+				)) {
+					const bizNode: BinaryNode = { tag: 'biz', attrs: {} }
 
-    // Esta verificação interna continua válida para diferenciar os tipos de botões
-    if ((message?.viewOnceMessage?.message?.interactiveMessage || message?.viewOnceMessageV2?.message?.interactiveMessage || message?.viewOnceMessageV2Extension?.message?.interactiveMessage || message?.interactiveMessage) || (message?.viewOnceMessage?.message?.buttonsMessage || message?.viewOnceMessageV2?.message?.buttonsMessage || message?.viewOnceMessageV2Extension?.message?.buttonsMessage || message?.buttonsMessage)) {
-        bizNode.content = [{
-            tag: 'interactive',
-            attrs: { type: 'native_flow', v: '1' },
-            content: [{
-                tag: 'native_flow',
-                attrs: { v: '9', name: 'mixed' }
-            }]
-        }]
-    }
+					if((message?.viewOnceMessage?.message?.interactiveMessage  || message?.interactiveMessage) || (message?.viewOnceMessage?.message?.buttonsMessage  || message?.buttonsMessage)) {
+						bizNode.content = [{
+							tag: 'interactive',
+							attrs: {
+								type: 'native_flow',
+								v: '1'
+							},
+							content: [{
+								tag: 'native_flow',
+								attrs: { v: '9', name: 'mixed' }
+							}]
+						}]
+					} 
 
-    (stanza.content as BinaryNode[]).push(bizNode)
-}
+					(stanza.content as BinaryNode[]).push(bizNode)
+				}
 			logger.debug({ msgId }, `sending message to ${participants.length} devices`)
 
 			await sendNode(stanza)
