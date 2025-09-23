@@ -704,16 +704,17 @@ const lidCache = new NodeCache({
 			if (additionalNodes && additionalNodes.length > 0) {
 				;(stanza.content as BinaryNode[]).push(...additionalNodes)
 			}
-			const content = normalizeMessageContent(message)!
+			cconst content = normalizeMessageContent(message)!
 				const contentType = getContentType(content)!
 
 				if((isJidGroup(jid) || isJidUser(jid))  || isLidUser(jid) && (
 					contentType === 'interactiveMessage' ||
-					contentType === 'buttonsMessage' 
+					contentType === 'buttonsMessage' ||
+					contentType === 'listMessage'
 				)) {
 					const bizNode: BinaryNode = { tag: 'biz', attrs: {} }
 
-					if((message?.viewOnceMessage?.message?.interactiveMessage  || message?.interactiveMessage) || (message?.viewOnceMessage?.message?.buttonsMessage  || message?.buttonsMessage)) {
+					if((message?.viewOnceMessage?.message?.interactiveMessage || message?.viewOnceMessageV2?.message?.interactiveMessage || message?.viewOnceMessageV2Extension?.message?.interactiveMessage || message?.interactiveMessage) || (message?.viewOnceMessage?.message?.buttonsMessage || message?.viewOnceMessageV2?.message?.buttonsMessage || message?.viewOnceMessageV2Extension?.message?.buttonsMessage || message?.buttonsMessage)) {
 						bizNode.content = [{
 							tag: 'interactive',
 							attrs: {
@@ -725,7 +726,16 @@ const lidCache = new NodeCache({
 								attrs: { v: '9', name: 'mixed' }
 							}]
 						}]
-					} 
+					} else if(message?.listMessage) {
+						// list message only support in private chat
+						bizNode.content = [{
+							tag: 'list',
+							attrs: {
+								type: 'product_list',
+								v: '2'
+							}
+						}]
+					}
 
 					(stanza.content as BinaryNode[]).push(bizNode)
 				}
