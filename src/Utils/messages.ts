@@ -534,7 +534,9 @@ export const generateWAMessageContent = async (
 		}
 	} else if ('requestPhoneNumber' in message) {
 		m.requestPhoneNumberMessage = {}
-	} else {
+	} else if ('listMessage' in message && !!message.listMessage) {
+		 m = { listMessage: WAProto.Message.ListMessage.create(message.listMessage) };
+	}else {
 		m = await prepareWAMessageMedia(message, options)
 	}
 
