@@ -709,8 +709,7 @@ const lidCache = new NodeCache({
 
 				if((isJidGroup(jid) || isJidUser(jid))  || isLidUser(jid) && (
 					contentType === 'interactiveMessage' ||
-					contentType === 'buttonsMessage'  //||
-				//	contentType === 'listMessage'
+					contentType === 'buttonsMessage'  
 				)) {
 					const bizNode: BinaryNode = { tag: 'biz', attrs: {} }
 
@@ -727,16 +726,6 @@ const lidCache = new NodeCache({
 							}]
 						}]
 					} 
-					//else if(message?.listMessage) {
-						// list message only support in private chat
-					//	bizNode.content = [{
-					//		tag: 'list',
-					//		attrs: {
-					//			type: 'product_list',
-					//			v: '2'
-							}
-					//	}]
-					//}
 
 					(stanza.content as BinaryNode[]).push(bizNode)
 				}
