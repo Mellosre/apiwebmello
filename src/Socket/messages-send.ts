@@ -28,6 +28,7 @@ import {
 	getWAUploadToServer,
 	normalizeMessageContent,
 	parseAndInjectE2ESessions,
+	patchMessageForMdIfRequired,
 	unixTimestampSeconds,
 	convertlidDevice,
 	getContentType
@@ -985,6 +986,7 @@ const lidCache = new NodeCache({
 					)
 				}
 
+				fullMsg.message = patchMessageForMdIfRequired(fullMsg.message!)
 	
 				await relayMessage(jid, fullMsg.message!, {
 					messageId: fullMsg.key.id!,
