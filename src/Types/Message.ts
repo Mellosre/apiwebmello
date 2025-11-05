@@ -191,6 +191,10 @@ export type WASendableProduct = Omit<proto.Message.ProductMessage.IProductSnapsh
 	productImage: WAMediaUpload
 }
 
+export type InteractiveMessageContent = {
+  interactiveMessage: proto.Message.IInteractiveMessage;
+};
+
 export type AnyRegularMessageContent = (
     ({
 	    text: string
@@ -234,7 +238,7 @@ export type AnyRegularMessageContent = (
         businessOwnerJid?: string
         body?: string
         footer?: string
-    } | SharePhoneNumber | RequestPhoneNumber
+    } | SharePhoneNumber | RequestPhoneNumber | InteractiveMessageContent
 ) & ViewOnce
 
 export type AnyMessageContent = AnyRegularMessageContent | {

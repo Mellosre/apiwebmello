@@ -480,6 +480,8 @@ export const generateWAMessageContent = async (
 	} else if ('ptv' in message && message.ptv) {
 		const { videoMessage } = await prepareWAMessageMedia({ video: message.video }, options)
 		m.ptvMessage = videoMessage
+	} else if ("interactiveMessage" in message) {
+    m.interactiveMessage = message.interactiveMessage;
 	} else if ('product' in message) {
 		const { imageMessage } = await prepareWAMessageMedia({ image: message.product.productImage }, options)
 		m.productMessage = WAProto.Message.ProductMessage.fromObject({
@@ -1035,15 +1037,15 @@ const generateContextInfo = () => {
  */
 export const patchMessageForMdIfRequired = (message: proto.IMessage) => {
 	const requiresPatch = !!(
-		message.buttonsMessage
-		// || message.templateMessage
-		|| message.listMessage
+		message.buttonsMessage ||
+    message.listMessage ||
+    message.interactiveMessage
 	)
 	if(requiresPatch) {
 		message = {
-			viewOnceMessage: {
+			documentWithCaptionMessage: {
 				message: {
-					messageContextInfo: generateContextInfo(),
+					
 					...message
 				}
 			}
